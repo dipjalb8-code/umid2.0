@@ -14,27 +14,11 @@ body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-serif;ov
 .cursor-ring{width:32px;height:32px;border:2px solid rgba(255,61,0,.55);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:border-color .3s;}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.35;}
 
-/* ── CLOUD SYNC BADGE ── */
 #syncBadge{position:fixed;bottom:1.2rem;left:1.2rem;z-index:9000;display:flex;align-items:center;gap:6px;background:rgba(10,10,15,.92);border:1px solid rgba(0,229,255,.25);padding:6px 12px;font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--neon);backdrop-filter:blur(8px);}
 .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--neon);animation:syncPulse 1.8s ease-in-out infinite;}
 @keyframes syncPulse{0%,100%{opacity:1;}50%{opacity:.2;}}
 .sync-dot.err{background:#f87171;animation:none;}
 .sync-dot.idle{background:var(--muted);animation:none;}
-
-/* ── SETUP MODAL ── */
-#setupModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:6000;align-items:center;justify-content:center;padding:1rem;}
-#setupModal.open{display:flex;}
-.setup-box{background:var(--dark2);border:1px solid rgba(0,229,255,.3);padding:2.5rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
-.setup-box h2{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--neon);margin-bottom:.2rem;}
-.setup-box p{font-size:.82rem;color:var(--muted);margin-bottom:.2rem;line-height:1.6;}
-.setup-box a{color:var(--neon);}
-.setup-steps{background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.15);padding:1rem 1.2rem;margin:1rem 0;font-size:.82rem;color:var(--text);line-height:2;}
-.setup-input{width:100%;background:var(--dark);border:1px solid rgba(255,255,255,.1);color:var(--text);font-family:'Barlow',sans-serif;font-size:.92rem;padding:11px 14px;outline:none;margin-bottom:.75rem;transition:border-color .2s;}
-.setup-input:focus{border-color:var(--neon);}
-.setup-submit{width:100%;background:var(--neon);color:#000;font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:12px;border:none;cursor:none;transition:background .2s;}
-.setup-submit:hover{opacity:.85;}
-.setup-skip{background:none;border:none;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;cursor:none;margin-top:.75rem;display:block;text-align:center;width:100%;}
-.setup-err{color:#f87171;font-size:.8rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;display:none;margin-bottom:.5rem;}
 
 nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:1rem 2.5rem;background:rgba(10,10,15,.92);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,61,0,.15);}
 .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.1em;}
@@ -227,26 +211,7 @@ footer{background:#060609;border-top:1px solid rgba(255,61,0,.12);padding:2.5rem
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
-<div id="syncBadge"><div class="sync-dot idle" id="syncDot"></div><span id="syncLabel">Connecting…</span></div>
-
-<!-- SETUP MODAL -->
-<div id="setupModal">
-  <div class="setup-box">
-    <h2>☁️ Cloud Sync Setup</h2>
-    <p>To share your data with friends, you need a free <strong>JSONBin</strong> account. This takes 2 minutes:</p>
-    <div class="setup-steps">
-      1. Go to <a href="https://jsonbin.io" target="_blank">jsonbin.io</a> and sign up free<br>
-      2. Click <strong>API Keys</strong> in the dashboard<br>
-      3. Copy your <strong>Master Key</strong> (starts with <code>$2b$...</code>)<br>
-      4. Paste it below and click Connect
-    </div>
-    <div class="setup-err" id="setupErr">❌ Could not connect. Check your API key and try again.</div>
-    <input class="setup-input" type="text" id="apiKeyInput" placeholder="Paste your JSONBin Master Key here…"/>
-    <p style="font-size:.75rem;color:var(--muted);margin-bottom:.8rem">Your key is stored only in your browser and never shared.</p>
-    <button class="setup-submit" onclick="connectCloud()">🔗 Connect & Sync</button>
-    <button class="setup-skip" onclick="skipCloud()">⚡ Use locally only (no sharing)</button>
-  </div>
-</div>
+<div id="syncBadge"><div class="sync-dot idle" id="syncDot"></div><span id="syncLabel">Loading…</span></div>
 
 <div id="lightbox">
   <button class="lb-close" onclick="closeLB()">✕</button>
@@ -339,7 +304,6 @@ footer{background:#060609;border-top:1px solid rgba(255,61,0,.12);padding:2.5rem
         <button class="admin-tab" onclick="switchTab('members')">👥 Members</button>
         <button class="admin-tab" onclick="switchTab('stats')">📊 Stats</button>
       </div>
-
       <div class="admin-pane active" id="pane-certs">
         <div class="admin-title">➕ Add New Certificate</div>
         <div class="admin-grid">
@@ -360,7 +324,6 @@ footer{background:#060609;border-top:1px solid rgba(255,61,0,.12);padding:2.5rem
           <button class="btn-sm" style="border-color:rgba(255,255,255,.15);color:var(--muted)" onclick="lockAdmin()">🔒 Lock Admin</button>
         </div>
       </div>
-
       <div class="admin-pane" id="pane-route">
         <div class="admin-title">🗺 Route Map Events</div>
         <p style="font-size:.82rem;color:var(--muted);margin-bottom:.8rem">Edit, reorder or remove events.</p>
@@ -381,12 +344,9 @@ footer{background:#060609;border-top:1px solid rgba(255,61,0,.12);padding:2.5rem
               <option value="#22c55e">🟢 Green — Participation</option>
             </select>
           </div>
-          <div class="admin-actions">
-            <button class="btn-add neon" onclick="addRouteEvent()">➕ Add to Route</button>
-          </div>
+          <div class="admin-actions"><button class="btn-add neon" onclick="addRouteEvent()">➕ Add to Route</button></div>
         </div>
       </div>
-
       <div class="admin-pane" id="pane-members">
         <div class="admin-title">👥 Team Members</div>
         <p style="font-size:.82rem;color:var(--muted);margin-bottom:.8rem">Click ✏️ Edit to update any member.</p>
@@ -410,12 +370,9 @@ footer{background:#060609;border-top:1px solid rgba(255,61,0,.12);padding:2.5rem
               <option value="linear-gradient(135deg,#f472b6,#7B2FFF)">🌸 Pink Purple</option>
             </select>
           </div>
-          <div class="admin-actions">
-            <button class="btn-add gold" onclick="addMember()">➕ Add Member</button>
-          </div>
+          <div class="admin-actions"><button class="btn-add gold" onclick="addMember()">➕ Add Member</button></div>
         </div>
       </div>
-
       <div class="admin-pane" id="pane-stats">
         <div class="admin-title">📊 Hero Stats</div>
         <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem">These numbers animate on the homepage hero.</p>
@@ -452,11 +409,13 @@ footer{background:#060609;border-top:1px solid rgba(255,61,0,.12);padding:2.5rem
 <div id="toastBox"></div>
 
 <script>
-/* ══════════════════════════════════════════
-   CONFIG
-══════════════════════════════════════════ */
-const ADMIN_PASSWORD = "team2025";
-const JSONBIN_BASE   = "https://api.jsonbin.io/v3";
+/* ══════════════════════════════
+   HARDCODED CONFIG — no setup needed for anyone
+══════════════════════════════ */
+const ADMIN_PASSWORD  = "team2025";
+const JB_KEY          = "$2a$10$jkxQQMtF94a1X0WXnq5jmurA/oHlnAy3iO7cbtCSaM2Z1IRBTPU6i";
+const JB_BIN_STORAGE  = "apex_bin_id"; // localStorage key to remember the bin
+const JSONBIN_BASE    = "https://api.jsonbin.io/v3";
 
 const DEFAULT_STATS   = {h:8,w:5,c:12};
 const DEFAULT_MEMBERS = [
@@ -476,159 +435,100 @@ const DEFAULT_ROUTE = [
   {id:'r7',label:'FINISH 🏁',event:'Season Complete',rank:'Champions',color:'#FF3D00'},
 ];
 
-/* ══════════════════════════════════════════
-   CLOUD STORAGE (JSONBin)
-══════════════════════════════════════════ */
-let JSONBIN_KEY = localStorage.getItem('apex_jb_key') || '';
-let JSONBIN_BIN = localStorage.getItem('apex_jb_bin') || '';
-let cloudMode   = false;
+/* ══════════════════════════════
+   CLOUD ENGINE
+══════════════════════════════ */
+let BIN_ID = localStorage.getItem(JB_BIN_STORAGE) || '';
 
 function setSyncUI(state, label){
   const dot = document.getElementById('syncDot');
-  const lbl = document.getElementById('syncLabel');
-  dot.className = 'sync-dot ' + (state === 'ok' ? '' : state === 'err' ? 'err' : 'idle');
-  lbl.textContent = label;
+  dot.className = 'sync-dot' + (state==='ok'?'':state==='err'?' err':' idle');
+  document.getElementById('syncLabel').textContent = label;
 }
 
-async function cloudGet(){
-  const r = await fetch(`${JSONBIN_BASE}/b/${JSONBIN_BIN}/latest`,{
-    headers:{'X-Master-Key': JSONBIN_KEY}
+async function jbGet(){
+  const r = await fetch(`${JSONBIN_BASE}/b/${BIN_ID}/latest`,{
+    headers:{'X-Master-Key':JB_KEY}
   });
-  if(!r.ok) throw new Error('fetch failed');
-  const j = await r.json();
-  return j.record;
+  if(!r.ok) throw new Error('get failed');
+  return (await r.json()).record;
 }
 
-async function cloudPut(data){
+async function jbPut(data){
   setSyncUI('','Saving…');
-  const r = await fetch(`${JSONBIN_BASE}/b/${JSONBIN_BIN}`,{
+  const r = await fetch(`${JSONBIN_BASE}/b/${BIN_ID}`,{
     method:'PUT',
-    headers:{'Content-Type':'application/json','X-Master-Key': JSONBIN_KEY},
-    body: JSON.stringify(data)
+    headers:{'Content-Type':'application/json','X-Master-Key':JB_KEY},
+    body:JSON.stringify(data)
   });
   if(!r.ok) throw new Error('put failed');
   setSyncUI('ok','Synced ✓');
-  setTimeout(()=>setSyncUI('ok','Cloud sync ON'),2000);
+  setTimeout(()=>setSyncUI('ok','☁️ Live'),2000);
 }
 
-async function createBin(defaultData){
+async function jbCreate(){
+  const payload = {certs:[],stats:DEFAULT_STATS,members:DEFAULT_MEMBERS,route:DEFAULT_ROUTE};
   const r = await fetch(`${JSONBIN_BASE}/b`,{
     method:'POST',
-    headers:{'Content-Type':'application/json','X-Master-Key': JSONBIN_KEY,'X-Bin-Name':'TeamApex'},
-    body: JSON.stringify(defaultData)
+    headers:{'Content-Type':'application/json','X-Master-Key':JB_KEY,'X-Bin-Name':'TeamApex'},
+    body:JSON.stringify(payload)
   });
   if(!r.ok) throw new Error('create failed');
   const j = await r.json();
-  return j.metadata.id;
+  BIN_ID = j.metadata.id;
+  localStorage.setItem(JB_BIN_STORAGE, BIN_ID);
+  return payload;
 }
 
-async function connectCloud(){
-  const key = document.getElementById('apiKeyInput').value.trim();
-  if(!key){toast('❌ Paste your API key first','err');return;}
-  document.getElementById('setupErr').style.display='none';
+async function masterSave(){
+  try{
+    await jbPut({certs,stats,members,route});
+  }catch(e){
+    setSyncUI('err','Save failed!');
+    toast('❌ Cloud save failed','err');
+  }
+}
+
+async function initApp(){
   setSyncUI('','Connecting…');
   try{
-    JSONBIN_KEY = key;
-    // create a fresh bin with default data
-    const defaultPayload = {certs:[],stats:DEFAULT_STATS,members:DEFAULT_MEMBERS,route:DEFAULT_ROUTE};
-    JSONBIN_BIN = await createBin(defaultPayload);
-    localStorage.setItem('apex_jb_key', JSONBIN_KEY);
-    localStorage.setItem('apex_jb_bin', JSONBIN_BIN);
-    cloudMode = true;
-    // load from cloud
-    const data = await cloudGet();
+    let data;
+    if(BIN_ID){
+      // returning visitor — fetch live data
+      data = await jbGet();
+    } else {
+      // very first time ever — create the shared bin
+      data = await jbCreate();
+      toast('☁️ Cloud database created! Share this page with friends.','ok');
+    }
     applyData(data);
-    document.getElementById('setupModal').classList.remove('open');
-    setSyncUI('ok','Cloud sync ON');
-    toast('☁️ Cloud connected! Share your URL with friends.','ok');
+    setSyncUI('ok','☁️ Live');
     renderAll();
   }catch(e){
-    document.getElementById('setupErr').style.display='block';
-    setSyncUI('err','Connection failed');
-  }
-}
-
-async function initCloud(){
-  if(!JSONBIN_KEY || !JSONBIN_BIN){
-    // first time — show setup
-    document.getElementById('setupModal').classList.add('open');
-    setSyncUI('idle','Local mode');
-    loadLocal();
+    setSyncUI('err','Offline');
+    toast('⚠️ Cloud unreachable — check internet','err');
+    // fallback: show defaults so page isn't blank
+    applyData(null);
     renderAll();
-    return;
   }
-  setSyncUI('','Connecting…');
-  try{
-    const data = await cloudGet();
-    applyData(data);
-    cloudMode = true;
-    setSyncUI('ok','Cloud sync ON');
-    renderAll();
-  }catch(e){
-    setSyncUI('err','Offline — local data');
-    loadLocal();
-    renderAll();
-    toast('⚠️ Cloud unreachable — showing local data','err');
-  }
-}
-
-function skipCloud(){
-  document.getElementById('setupModal').classList.remove('open');
-  setSyncUI('idle','Local only');
-  loadLocal();
-  renderAll();
-  toast('⚡ Running in local mode — changes won\'t sync','info');
 }
 
 function applyData(data){
-  if(!data) return;
-  certs   = data.certs   || [];
-  stats   = data.stats   || DEFAULT_STATS;
-  members = data.members || DEFAULT_MEMBERS;
-  route   = data.route   || DEFAULT_ROUTE;
+  certs   = data?.certs   || [];
+  stats   = data?.stats   || DEFAULT_STATS;
+  members = data?.members || DEFAULT_MEMBERS;
+  route   = data?.route   || DEFAULT_ROUTE;
 }
 
-async function saveCloud(){
-  if(!cloudMode) return;
-  try{
-    await cloudPut({certs,stats,members,route});
-  }catch(e){
-    setSyncUI('err','Save failed!');
-    toast('❌ Cloud save failed — check connection','err');
-  }
-}
-
-/* ── LOCAL FALLBACK ── */
-function loadLocal(){
-  certs   = lsLoad('apex_certs',   []);
-  stats   = lsLoad('apex_stats',   DEFAULT_STATS);
-  members = lsLoad('apex_members', DEFAULT_MEMBERS);
-  route   = lsLoad('apex_route',   DEFAULT_ROUTE);
-}
-function lsLoad(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
-function lsSave(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
-
-/* master save — writes cloud OR local */
-async function masterSave(){
-  if(cloudMode){
-    await saveCloud();
-  } else {
-    lsSave('apex_certs',certs);
-    lsSave('apex_stats',stats);
-    lsSave('apex_members',members);
-    lsSave('apex_route',route);
-  }
-}
-
-/* ══════════════════════════════════════════
-   APP STATE
-══════════════════════════════════════════ */
+/* ══════════════════════════════
+   STATE
+══════════════════════════════ */
 let certs=[], stats={}, members=[], route=[];
 let isAdmin=false, pendingFileData=null;
 
-/* ══════════════════════════════════════════
+/* ══════════════════════════════
    ADMIN
-══════════════════════════════════════════ */
+══════════════════════════════ */
 function handleAdminBtn(){isAdmin?lockAdmin():openPwModal();}
 function openPwModal(){document.getElementById('pwModal').style.display='flex';document.getElementById('pwInput').value='';document.getElementById('pwError').style.display='none';setTimeout(()=>document.getElementById('pwInput').focus(),100);}
 function closePwModal(){document.getElementById('pwModal').style.display='none';}
@@ -661,7 +561,6 @@ function switchTab(tab){
   document.getElementById('pane-'+tab).classList.add('active');
 }
 
-/* ── EDIT MODAL ── */
 function closeEditModal(){document.getElementById('editModal').classList.remove('open');}
 document.getElementById('editModal').addEventListener('click',e=>{if(e.target.id==='editModal')closeEditModal();});
 function openEditModal(title,bodyHtml,onSave){
@@ -687,59 +586,30 @@ async function saveStats(){
 function renderCerts(){
   const grid=document.getElementById('certsGrid');
   isAdmin?grid.classList.add('admin-active'):grid.classList.remove('admin-active');
-  if(!certs.length){
-    grid.innerHTML=`<div class="empty-state"><div class="e-icon">🏆</div><p>${isAdmin?'No certificates yet — add your first win above!':'Certificates coming soon!'}</p></div>`;
-    return;
-  }
+  if(!certs.length){grid.innerHTML=`<div class="empty-state"><div class="e-icon">🏆</div><p>${isAdmin?'No certificates yet — add your first win above!':'Certificates coming soon!'}</p></div>`;return;}
   grid.innerHTML='';
   certs.forEach((c,i)=>{
-    const card=document.createElement('div');
-    card.className='cert-card';card.style.animationDelay=(i*.07)+'s';
+    const card=document.createElement('div');card.className='cert-card';card.style.animationDelay=(i*.07)+'s';
     const imgHtml=c.image
       ?`<div class="cert-img-wrap" onclick="openLB('${c.id}')"><img src="${c.image}" alt="${esc(c.title)}" loading="lazy"/><div class="img-overlay"><span>🔍 View Full</span></div></div>`
       :`<div class="cert-placeholder-img"><div class="ph-icon">${rankIcon(c.rank)}</div><div class="ph-rank">${esc(c.rank)}</div></div>`;
-    card.innerHTML=`${imgHtml}
-      <div class="cert-body">
-        <div class="cert-event">${esc(c.eventName)}</div>
-        <div class="cert-name">${esc(c.title)}</div>
-        <div class="cert-meta">
-          <span class="cert-winner">${esc(c.rank)}</span>
-          <span class="cert-date">${esc(c.date)}</span>
-        </div>
-        <div class="cert-card-btns">
-          <button class="btn-sm edit" onclick="editCert('${c.id}')">✏️ Edit</button>
-          <button class="btn-sm" onclick="deleteCert('${c.id}')">🗑 Delete</button>
-        </div>
-      </div>`;
+    card.innerHTML=`${imgHtml}<div class="cert-body"><div class="cert-event">${esc(c.eventName)}</div><div class="cert-name">${esc(c.title)}</div><div class="cert-meta"><span class="cert-winner">${esc(c.rank)}</span><span class="cert-date">${esc(c.date)}</span></div><div class="cert-card-btns"><button class="btn-sm edit" onclick="editCert('${c.id}')">✏️ Edit</button><button class="btn-sm" onclick="deleteCert('${c.id}')">🗑 Delete</button></div></div>`;
     grid.appendChild(card);
   });
 }
-
 async function addCert(){
-  const title=document.getElementById('fTitle').value.trim();
-  const event=document.getElementById('fEvent').value.trim();
-  const rank=document.getElementById('fRank').value.trim();
-  const date=document.getElementById('fDate').value.trim();
+  const title=document.getElementById('fTitle').value.trim(),event=document.getElementById('fEvent').value.trim(),rank=document.getElementById('fRank').value.trim(),date=document.getElementById('fDate').value.trim();
   if(!title||!event||!rank){toast('❌ Fill Title, Event & Rank!','err');return;}
   certs.unshift({id:Date.now().toString(),title,eventName:event,rank,date:date||new Date().getFullYear().toString(),image:pendingFileData||null,createdAt:Date.now()});
   await masterSave();renderCerts();
   ['fTitle','fEvent','fRank','fDate'].forEach(id=>document.getElementById(id).value='');
   pendingFileData=null;document.getElementById('dzText').textContent='Click or drag & drop certificate image here';document.getElementById('certFile').value='';
-  toast('🏆 Certificate added & synced!','ok');
+  toast('🏆 Certificate added & synced to all!','ok');
 }
-
 function editCert(id){
   const c=certs.find(x=>x.id===id);if(!c)return;
-  openEditModal('✏️ Edit Certificate',`
-    <div class="admin-grid">
-      <div class="field-group"><label>Certificate Title *</label><input type="text" id="ec_title" value="${esc(c.title)}"/></div>
-      <div class="field-group"><label>Event Name *</label><input type="text" id="ec_event" value="${esc(c.eventName)}"/></div>
-      <div class="field-group"><label>Rank / Award *</label><input type="text" id="ec_rank" value="${esc(c.rank)}"/></div>
-      <div class="field-group"><label>Date</label><input type="text" id="ec_date" value="${esc(c.date)}"/></div>
-    </div>`,async ()=>{
-    const title=document.getElementById('ec_title').value.trim();
-    const event=document.getElementById('ec_event').value.trim();
-    const rank=document.getElementById('ec_rank').value.trim();
+  openEditModal('✏️ Edit Certificate',`<div class="admin-grid"><div class="field-group"><label>Certificate Title *</label><input type="text" id="ec_title" value="${esc(c.title)}"/></div><div class="field-group"><label>Event Name *</label><input type="text" id="ec_event" value="${esc(c.eventName)}"/></div><div class="field-group"><label>Rank / Award *</label><input type="text" id="ec_rank" value="${esc(c.rank)}"/></div><div class="field-group"><label>Date</label><input type="text" id="ec_date" value="${esc(c.date)}"/></div></div>`,async()=>{
+    const title=document.getElementById('ec_title').value.trim(),event=document.getElementById('ec_event').value.trim(),rank=document.getElementById('ec_rank').value.trim();
     if(!title||!event||!rank){toast('❌ Fill required fields!','err');return;}
     c.title=title;c.eventName=event;c.rank=rank;c.date=document.getElementById('ec_date').value.trim();
     await masterSave();renderCerts();closeEditModal();toast('✅ Updated & synced!','ok');
@@ -750,174 +620,89 @@ async function confirmClearAll(){if(!confirm('Delete ALL certificates?'))return;
 
 const certFileInput=document.getElementById('certFile'),dropZone=document.getElementById('dropZone');
 certFileInput.addEventListener('change',e=>{if(e.target.files[0])processFile(e.target.files[0]);});
-['dragover','dragleave','drop'].forEach(evt=>{
-  dropZone.addEventListener(evt,e=>{
-    e.preventDefault();dropZone.classList.toggle('drag-over',evt==='dragover');
-    if(evt==='drop'&&e.dataTransfer.files[0])processFile(e.dataTransfer.files[0]);
-  });
-});
-function processFile(file){
-  if(!file.type.startsWith('image/')){toast('❌ Use an image file','err');return;}
-  if(file.size>3*1024*1024){toast('⚠️ Image over 3MB','err');return;}
-  const reader=new FileReader();
-  reader.onload=e=>{pendingFileData=e.target.result;document.getElementById('dzText').textContent='✅ '+file.name;};
-  reader.readAsDataURL(file);
-}
+['dragover','dragleave','drop'].forEach(evt=>{dropZone.addEventListener(evt,e=>{e.preventDefault();dropZone.classList.toggle('drag-over',evt==='dragover');if(evt==='drop'&&e.dataTransfer.files[0])processFile(e.dataTransfer.files[0]);});});
+function processFile(file){if(!file.type.startsWith('image/')){toast('❌ Use an image file','err');return;}if(file.size>3*1024*1024){toast('⚠️ Image over 3MB','err');return;}const reader=new FileReader();reader.onload=e=>{pendingFileData=e.target.result;document.getElementById('dzText').textContent='✅ '+file.name;};reader.readAsDataURL(file);}
 function openLB(id){const c=certs.find(x=>x.id===id);if(!c||!c.image)return;document.getElementById('lbImg').src=c.image;document.getElementById('lightbox').classList.add('open');}
 function closeLB(){document.getElementById('lightbox').classList.remove('open');}
 document.getElementById('lightbox').addEventListener('click',e=>{if(e.target.id==='lightbox')closeLB();});
 
-/* ── ROUTE MAP EVENTS ── */
+/* ── ROUTE ── */
 function renderRouteList(){
   const list=document.getElementById('routeList');
   if(!route.length){list.innerHTML='<p style="color:var(--muted);font-size:.85rem;padding:.5rem 0">No events yet.</p>';return;}
   list.innerHTML='';
   route.forEach((r,i)=>{
     const row=document.createElement('div');row.className='edit-row';
-    row.innerHTML=`
-      <div class="er-dot" style="background:${r.color}"></div>
-      <div class="er-info"><div class="er-title">${esc(r.label)}</div><div class="er-sub">${esc(r.event)} &nbsp;·&nbsp; ${esc(r.rank)}</div></div>
-      <div class="er-btns">
-        <button class="btn-sm up-dn" onclick="moveRoute(${i},-1)" ${i===0?'disabled style="opacity:.3"':''}>↑</button>
-        <button class="btn-sm up-dn" onclick="moveRoute(${i},1)"  ${i===route.length-1?'disabled style="opacity:.3"':''}>↓</button>
-        <button class="btn-sm edit" onclick="editRouteEvent('${r.id}')">✏️</button>
-        <button class="btn-sm" onclick="deleteRouteEvent('${r.id}')">🗑</button>
-      </div>`;
+    row.innerHTML=`<div class="er-dot" style="background:${r.color}"></div><div class="er-info"><div class="er-title">${esc(r.label)}</div><div class="er-sub">${esc(r.event)} &nbsp;·&nbsp; ${esc(r.rank)}</div></div><div class="er-btns"><button class="btn-sm up-dn" onclick="moveRoute(${i},-1)" ${i===0?'disabled style="opacity:.3"':''}>↑</button><button class="btn-sm up-dn" onclick="moveRoute(${i},1)" ${i===route.length-1?'disabled style="opacity:.3"':''}>↓</button><button class="btn-sm edit" onclick="editRouteEvent('${r.id}')">✏️</button><button class="btn-sm" onclick="deleteRouteEvent('${r.id}')">🗑</button></div>`;
     list.appendChild(row);
   });
 }
-
 async function addRouteEvent(){
-  const label=document.getElementById('rlLabel').value.trim();
-  const event=document.getElementById('rlEvent').value.trim();
-  const rank=document.getElementById('rlRank').value.trim();
-  const color=document.getElementById('rlColor').value;
+  const label=document.getElementById('rlLabel').value.trim(),event=document.getElementById('rlEvent').value.trim(),rank=document.getElementById('rlRank').value.trim(),color=document.getElementById('rlColor').value;
   if(!label||!event||!rank){toast('❌ Fill all route event fields!','err');return;}
   route.push({id:'r'+Date.now(),label,event,rank,color});
   await masterSave();renderRouteList();
   ['rlLabel','rlEvent','rlRank'].forEach(id=>document.getElementById(id).value='');
   toast('✅ Event added & synced!','ok');
 }
-
 function editRouteEvent(id){
   const r=route.find(x=>x.id===id);if(!r)return;
-  openEditModal('✏️ Edit Route Event',`
-    <div class="admin-grid">
-      <div class="field-group"><label>Short Label *</label><input type="text" id="er_label" value="${esc(r.label)}"/></div>
-      <div class="field-group"><label>Full Event Name *</label><input type="text" id="er_event" value="${esc(r.event)}"/></div>
-      <div class="field-group"><label>Award / Rank *</label><input type="text" id="er_rank" value="${esc(r.rank)}"/></div>
-      <div class="field-group"><label>Dot Color</label>
-        <select id="er_color">
-          <option value="#00E5FF" ${r.color==='#00E5FF'?'selected':''}>🔵 Cyan</option>
-          <option value="#FFD600" ${r.color==='#FFD600'?'selected':''}>🟡 Gold</option>
-          <option value="#FF3D00" ${r.color==='#FF3D00'?'selected':''}>🔴 Red</option>
-          <option value="#22c55e" ${r.color==='#22c55e'?'selected':''}>🟢 Green</option>
-        </select>
-      </div>
-    </div>`,async ()=>{
-    const label=document.getElementById('er_label').value.trim();
-    const event=document.getElementById('er_event').value.trim();
-    const rank=document.getElementById('er_rank').value.trim();
+  openEditModal('✏️ Edit Route Event',`<div class="admin-grid"><div class="field-group"><label>Short Label *</label><input type="text" id="er_label" value="${esc(r.label)}"/></div><div class="field-group"><label>Full Event Name *</label><input type="text" id="er_event" value="${esc(r.event)}"/></div><div class="field-group"><label>Award / Rank *</label><input type="text" id="er_rank" value="${esc(r.rank)}"/></div><div class="field-group"><label>Dot Color</label><select id="er_color"><option value="#00E5FF" ${r.color==='#00E5FF'?'selected':''}>🔵 Cyan</option><option value="#FFD600" ${r.color==='#FFD600'?'selected':''}>🟡 Gold</option><option value="#FF3D00" ${r.color==='#FF3D00'?'selected':''}>🔴 Red</option><option value="#22c55e" ${r.color==='#22c55e'?'selected':''}>🟢 Green</option></select></div></div>`,async()=>{
+    const label=document.getElementById('er_label').value.trim(),event=document.getElementById('er_event').value.trim(),rank=document.getElementById('er_rank').value.trim();
     if(!label||!event||!rank){toast('❌ Fill all fields!','err');return;}
     r.label=label;r.event=event;r.rank=rank;r.color=document.getElementById('er_color').value;
     await masterSave();renderRouteList();closeEditModal();toast('✅ Updated & synced!','ok');
   });
 }
 async function deleteRouteEvent(id){if(!confirm('Remove this route event?'))return;route=route.filter(r=>r.id!==id);await masterSave();renderRouteList();toast('🗑 Removed','info');}
-async function moveRoute(idx,dir){
-  const ni=idx+dir;if(ni<0||ni>=route.length)return;
-  [route[idx],route[ni]]=[route[ni],route[idx]];await masterSave();renderRouteList();
-}
+async function moveRoute(idx,dir){const ni=idx+dir;if(ni<0||ni>=route.length)return;[route[idx],route[ni]]=[route[ni],route[idx]];await masterSave();renderRouteList();}
 
 /* ── MEMBERS ── */
 function renderMemberList(){
-  const list=document.getElementById('memberList');
-  list.innerHTML='';
+  const list=document.getElementById('memberList');list.innerHTML='';
   if(!members.length){list.innerHTML='<p style="color:var(--muted);font-size:.85rem;padding:.5rem 0">No members yet.</p>';return;}
   members.forEach(m=>{
     const row=document.createElement('div');row.className='edit-row';
-    row.innerHTML=`
-      <div class="er-avatar" style="background:${m.color}">${esc(m.letter)}</div>
-      <div class="er-info"><div class="er-title">${esc(m.name)}</div><div class="er-sub">${esc(m.role)} &nbsp;·&nbsp; ${esc(m.wins)} awards</div></div>
-      <div class="er-btns">
-        <button class="btn-sm edit" onclick="editMember('${m.id}')">✏️ Edit</button>
-        <button class="btn-sm" onclick="deleteMember('${m.id}')">🗑</button>
-      </div>`;
+    row.innerHTML=`<div class="er-avatar" style="background:${m.color}">${esc(m.letter)}</div><div class="er-info"><div class="er-title">${esc(m.name)}</div><div class="er-sub">${esc(m.role)} &nbsp;·&nbsp; ${esc(m.wins)} awards</div></div><div class="er-btns"><button class="btn-sm edit" onclick="editMember('${m.id}')">✏️ Edit</button><button class="btn-sm" onclick="deleteMember('${m.id}')">🗑</button></div>`;
     list.appendChild(row);
   });
 }
-
 function renderTeamGrid(){
-  const grid=document.getElementById('teamGrid');
-  grid.innerHTML='';
+  const grid=document.getElementById('teamGrid');grid.innerHTML='';
   isAdmin?grid.classList.add('admin-active-members'):grid.classList.remove('admin-active-members');
   if(!members.length){grid.innerHTML='<p style="color:var(--muted);font-family:\'Barlow Condensed\',sans-serif;letter-spacing:.1em">No members yet.</p>';return;}
   members.forEach(m=>{
     const card=document.createElement('div');card.className='member-card';
-    card.innerHTML=`
-      <div class="m-avatar" style="background:${m.color}">${esc(m.letter)}</div>
-      <div class="m-name">${esc(m.name)}</div>
-      <div class="m-role">${esc(m.role)}</div>
-      <div class="m-wins">${esc(m.wins)}<span>Awards Won</span></div>
-      <button class="m-edit-btn" onclick="editMember('${m.id}')">✏️ Edit Member</button>`;
+    card.innerHTML=`<div class="m-avatar" style="background:${m.color}">${esc(m.letter)}</div><div class="m-name">${esc(m.name)}</div><div class="m-role">${esc(m.role)}</div><div class="m-wins">${esc(m.wins)}<span>Awards Won</span></div><button class="m-edit-btn" onclick="editMember('${m.id}')">✏️ Edit Member</button>`;
     grid.appendChild(card);
   });
 }
-
-const COLOR_OPTIONS=[
-  {v:'linear-gradient(135deg,#FF3D00,#FF8C00)',l:'🔴 Fire Orange'},
-  {v:'linear-gradient(135deg,#00E5FF,#0077B6)',l:'🔵 Neon Blue'},
-  {v:'linear-gradient(135deg,#FFD600,#FF6D00)',l:'🟡 Gold Flame'},
-  {v:'linear-gradient(135deg,#7B2FFF,#FF3D00)',l:'🟣 Purple Fire'},
-  {v:'linear-gradient(135deg,#22c55e,#0077B6)',l:'🟢 Teal Green'},
-  {v:'linear-gradient(135deg,#f472b6,#7B2FFF)',l:'🌸 Pink Purple'},
-];
-
+const COLOR_OPTIONS=[{v:'linear-gradient(135deg,#FF3D00,#FF8C00)',l:'🔴 Fire Orange'},{v:'linear-gradient(135deg,#00E5FF,#0077B6)',l:'🔵 Neon Blue'},{v:'linear-gradient(135deg,#FFD600,#FF6D00)',l:'🟡 Gold Flame'},{v:'linear-gradient(135deg,#7B2FFF,#FF3D00)',l:'🟣 Purple Fire'},{v:'linear-gradient(135deg,#22c55e,#0077B6)',l:'🟢 Teal Green'},{v:'linear-gradient(135deg,#f472b6,#7B2FFF)',l:'🌸 Pink Purple'}];
 async function addMember(){
-  const name=document.getElementById('nmName').value.trim();
-  const role=document.getElementById('nmRole').value.trim();
-  const wins=document.getElementById('nmWins').value.trim()||'—';
-  const letter=(document.getElementById('nmLetter').value.trim().toUpperCase()||name[0]||'?');
-  const color=document.getElementById('nmColor').value;
+  const name=document.getElementById('nmName').value.trim(),role=document.getElementById('nmRole').value.trim(),wins=document.getElementById('nmWins').value.trim()||'—',letter=(document.getElementById('nmLetter').value.trim().toUpperCase()||name[0]||'?'),color=document.getElementById('nmColor').value;
   if(!name||!role){toast('❌ Name and Role required!','err');return;}
   members.push({id:'m'+Date.now(),name,role,wins,letter,color});
   await masterSave();renderMemberList();renderTeamGrid();
   ['nmName','nmRole','nmWins','nmLetter'].forEach(id=>document.getElementById(id).value='');
   toast('✅ Member added & synced!','ok');
 }
-
 function editMember(id){
   const m=members.find(x=>x.id===id);if(!m)return;
   const opts=COLOR_OPTIONS.map(o=>`<option value="${o.v}" ${m.color===o.v?'selected':''}>${o.l}</option>`).join('');
-  openEditModal('✏️ Edit Member',`
-    <div class="admin-grid">
-      <div class="field-group"><label>Full Name *</label><input type="text" id="em_name" value="${esc(m.name)}"/></div>
-      <div class="field-group"><label>Role / Position *</label><input type="text" id="em_role" value="${esc(m.role)}"/></div>
-      <div class="field-group"><label>Awards Won</label><input type="text" id="em_wins" value="${esc(m.wins)}"/></div>
-      <div class="field-group"><label>Avatar Letter</label><input type="text" id="em_letter" value="${esc(m.letter)}" maxlength="2"/></div>
-    </div>
-    <div class="field-group" style="margin-bottom:.5rem;max-width:340px"><label>Avatar Color</label><select id="em_color">${opts}</select></div>`,async ()=>{
-    const name=document.getElementById('em_name').value.trim();
-    const role=document.getElementById('em_role').value.trim();
+  openEditModal('✏️ Edit Member',`<div class="admin-grid"><div class="field-group"><label>Full Name *</label><input type="text" id="em_name" value="${esc(m.name)}"/></div><div class="field-group"><label>Role / Position *</label><input type="text" id="em_role" value="${esc(m.role)}"/></div><div class="field-group"><label>Awards Won</label><input type="text" id="em_wins" value="${esc(m.wins)}"/></div><div class="field-group"><label>Avatar Letter</label><input type="text" id="em_letter" value="${esc(m.letter)}" maxlength="2"/></div></div><div class="field-group" style="margin-bottom:.5rem;max-width:340px"><label>Avatar Color</label><select id="em_color">${opts}</select></div>`,async()=>{
+    const name=document.getElementById('em_name').value.trim(),role=document.getElementById('em_role').value.trim();
     if(!name||!role){toast('❌ Name and Role required!','err');return;}
-    m.name=name;m.role=role;
-    m.wins=document.getElementById('em_wins').value.trim()||'—';
-    m.letter=(document.getElementById('em_letter').value.trim().toUpperCase()||name[0]||'?');
-    m.color=document.getElementById('em_color').value;
+    m.name=name;m.role=role;m.wins=document.getElementById('em_wins').value.trim()||'—';m.letter=(document.getElementById('em_letter').value.trim().toUpperCase()||name[0]||'?');m.color=document.getElementById('em_color').value;
     await masterSave();renderMemberList();renderTeamGrid();closeEditModal();toast('✅ Updated & synced!','ok');
   });
 }
 async function deleteMember(id){if(!confirm('Remove this member?'))return;members=members.filter(m=>m.id!==id);await masterSave();renderMemberList();renderTeamGrid();toast('🗑 Removed','info');}
 
-/* ── RENDER ALL ── */
-function renderAll(){
-  renderStats();renderCerts();renderTeamGrid();
-  if(isAdmin){renderRouteList();renderMemberList();}
-}
+function renderAll(){renderStats();renderCerts();renderTeamGrid();if(isAdmin){renderRouteList();renderMemberList();}}
 
-/* ══════════════════════════════════════════
-   ROUTE MAP ENGINE (unchanged)
-══════════════════════════════════════════ */
+/* ══════════════════════════════
+   ROUTE MAP ENGINE
+══════════════════════════════ */
 const rmCanvas=document.getElementById('mapCanvas'),rmCtx=rmCanvas.getContext('2d');
 let rmW=0,rmH=0,rmPts=[],rmPath=[];
 let rmProgress=0,rmPlaying=false,rmLastT=null,rmRaf=null,rmReached=new Set(),rmCpTimer=null;
@@ -952,7 +737,7 @@ document.querySelectorAll('a,button,label,.cert-card,.member-card').forEach(el=>
 });
 
 /* ── INIT ── */
-initCloud();
+initApp();
 </script>
 </body>
 </html>
